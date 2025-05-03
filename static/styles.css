@@ -1,16 +1,27 @@
-body {
-    display: flex;
-    justify-content: center;
-    height: 100vh;
-    background-color: rgb(151, 111, 0);
+
+* { 
+    padding: 0;
     margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    flex-direction: column;       /* Stack items vertically */
+    align-items: center;          /* Center horizontally */
+    height: 100vh;                /* Full viewport height */
+    background-color: rgb(255, 224, 159);
 }
 
 p {
-    font-size: 5vw;
-    color: rgb(255, 205, 68);
+    font-size: 50px;
+    color: rgb(212, 156, 0);
 }
 
 .Again {
-    font-size: 3vw;
+    font-size: 30px;
+}
+
+.TryAgain {
+    display: flex;
+    justify-content: center;
 }

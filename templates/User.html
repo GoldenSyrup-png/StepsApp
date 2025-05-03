@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome {{ username }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='UserStyle.css') }}">
+</head>
+<body>
+    <div class="Top">
+        <p>Welcome <span class="Important">{{ username }}</span>!</p>
+    </div>
+
+    <div class="Rest">
+        <p>You have done<span class="Important">{{steps}}</span>   steps in total!</p>
+    </div>
+    
+    <div class="Rest">
+        <p>The last recorded date was on<span class="Important">{{ DateLast }}</span>  !</p>
+    </div>
+    
+    <div class="Rest">
+        <p>You've made it<span class="Important">{{ percentage }}%</span> of the way to 500 miles!</p>
+    </div>
+</body>
+</html>
