@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Data</title>
+</head>
+<body>
+    <div class="Welcome">
+        <p>
+            Hello {{ username }}
+        </p>
+    </div>
+
+    <div class="Submit">
+        <div class="Steps">
+            <p>Enter Amount Of Steps:</p>
+        </div>
+        
+        <form action="{{ url_for('NewData') }}" method="post">
+            <input type = "text" name = "sp"/>
+            <input type="submit" value="Continue" class="SubmitButton"/>
+        </form>
+    </div>
+</body>
+</html>

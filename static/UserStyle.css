@@ -29,3 +29,11 @@ p {
 .Important {
     color: rgb(102, 180, 0);
 }
+
+input {
+    color: rgb(212, 156, 0);
+    height: 2vw;
+    width: 10vw;
+    text-align: center;
+    padding: 0;
+}

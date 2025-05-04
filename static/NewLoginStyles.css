@@ -1,0 +1,30 @@
+body {
+    display: flex;
+    flex-direction: column;                 
+    height: 100vh;                
+    background-color: rgb(255, 224, 159);
+    overflow: hidden;
+}
+
+p {
+    font-size: 50px;
+    color: rgb(212, 156, 0);
+}
+
+.left {
+    padding-left: 3vw;
+}
+
+input {
+    width: 20vw;
+    height: 3vw;
+}
+
+.top {
+    padding-top: 5vw;
+}
+
+.button {
+    width: 20vw;
+    color: rgb(212, 156, 0);
+}

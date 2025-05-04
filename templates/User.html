@@ -22,5 +22,11 @@
     <div class="Rest">
         <p>You've made it<span class="Important">{{ percentage }}%</span> of the way to 500 miles!</p>
     </div>
+
+    <div class="Rest">
+        <form action="{{ url_for('success', Encryption=Encryption) }}" method="post">
+            <input type="submit" value="Add More Data!" class="SubmitButton"/>
+        </form>
+    </div>
 </body>
 </html>

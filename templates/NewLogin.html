@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='NewLoginStyles.css') }}">
+</head>
+<body>
+    <form action = "http://localhost:8000/NewLogin" method = "post">
+        <div class="left">
+            <p class="Label">Username:</p>
+            <input type = "text" name = "usrnm"/>
+        </div>
+        
+        <div class="left">
+            <p class="Label">Password:</p>
+            <input type = "text" name = "psswrd"/>
+        </div>
+        
+        <div class="left top">
+            <input type="submit" value="Create Logins" class="button">
+        </div>
+    </form>
+</body>
+</html>
