@@ -1,6 +1,8 @@
 from flask import Flask, redirect, url_for, request, render_template
 import pandas as pd
 from datetime import date
+import random
+import string
 
 app = Flask(__name__)
 
@@ -13,12 +15,16 @@ def NewData():
     global steps, Globaldate, Percentage
     if request.method == 'POST':
         Steps = int(request.form['sp'])
-        LocalUsername = user
-        LocalPassword = password
 
-        df = pd.read_csv('data.csv')
 
-        user_row = df[(df['username'] == LocalUsername) & (df['password'] == LocalPassword)]
+        data = pd.read_csv('data.csv')
+        df = data.loc[data['username'] == user]
+        df = df.loc[df['password'] == password]
+        if df.empty:
+            df = data.loc[data['username'] == user]
+            df = df.loc[df['password'] == int(password)]
+        user_row = df
+        print(df)
 
         row_index = user_row.index[0]
         CurrentSteps = df.at[row_index, 'total']
@@ -54,7 +60,28 @@ def success(Encryption):
 @app.route('/NewLogin', methods=['GET', 'POST'])
 def NewLogin():
     if request.method == 'POST':
-        return "You pressed a button"
+        username = request.form['usrnm']
+        password = request.form['psswrd']
+        print(username)
+        print(password)
+        
+        Data = pd.read_csv('data.csv')
+        if not (Data.loc[Data['username'] == username]).empty:
+            return redirect(url_for('fail'))
+        else:
+            today = date.today()
+            formatted = today.strftime('%d-%m-%Y')
+            dictionary = {
+                "username":[str(username)],
+                "password":[str(password)],
+                "total":[0],
+                "date":[formatted],
+                "encryption":[generate_random_string()],
+            }
+            NewData = pd.DataFrame(dictionary)
+            NewData = pd.concat([NewData, Data], ignore_index=True)
+            NewData.to_csv('data.csv', index=False)
+            return redirect(url_for('login'))
     else:
         return render_template('NewLogin.html')
 
@@ -75,7 +102,8 @@ def login():
         if button_clicked == "Submit":
             user = request.form['nm']
             password = request.form['pw']
-            Data = pd.read_csv("data.csv")
+            password = str(password)
+            Data = pd.read_csv("data.csv", dtype={'username': str, 'password': str})
             Data = Data.loc[Data['username'] == user]
             Data = Data.loc[Data['password'] == password]
             if not Data.empty:  # Success #
@@ -98,6 +126,10 @@ def login():
             return redirect(url_for('NewLogin'))
     else:
         return render_template('login.html')
+
+def generate_random_string(length=16):
+    characters = string.ascii_letters + string.digits  # A-Z, a-z, 0-9
+    return ''.join(random.choices(characters, k=length))
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
