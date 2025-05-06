@@ -3,8 +3,16 @@ import pandas as pd
 from datetime import date
 import random
 import string
+import hashlib
 
 app = Flask(__name__)
+
+def encrypt(password):
+    salt = "5gz"
+    dataBase_password = password+salt
+    hashed = hashlib.md5(dataBase_password.encode())
+    return hashed.hexdigest()
+
 
 @app.route('/')
 def home():
@@ -26,7 +34,7 @@ def NewData():
             df = df.loc[df['password'] == password]
             if df.empty:
                 df = data.loc[data['username'] == user]
-                df = df.loc[df['password'] == int(password)]
+                df = df.loc[df['password'] == password]
             user_row = df
             print(df)
 
@@ -66,8 +74,7 @@ def NewLogin():
     if request.method == 'POST':
         username = request.form['usrnm'].strip()
         password = request.form['psswrd'].strip()
-        print(username)
-        print(password)
+        password = encrypt(password)
         
         Data = pd.read_csv('data.csv')
         if not (Data.loc[Data['username'] == username]).empty:
@@ -77,10 +84,10 @@ def NewLogin():
             formatted = today.strftime('%d-%m-%Y')
             dictionary = {
                 "username":[str(username)],
-                "password":[str(password)],
+                "password":[password],
                 "total":[0],
                 "date":[formatted],
-                "encryption":[generate_random_string()],
+                "encryptionurl":[generate_random_string()],
             }
             NewData = pd.DataFrame(dictionary)
             NewData = pd.concat([NewData, Data], ignore_index=True)
@@ -106,7 +113,10 @@ def login():
         if button_clicked == "Submit":
             user = request.form['nm']
             password = request.form['pw']
+            print(password)
             password = str(password)
+            password = encrypt(password)
+            print(password)
             Data = pd.read_csv("data.csv", dtype={'username': str, 'password': str})
             Data = Data.loc[Data['username'] == user]
             Data = Data.loc[Data['password'] == password]
@@ -116,7 +126,7 @@ def login():
                 Percentage = "{:.2f}".format((Data["total"].iloc[0] / 1091450) * 100)
                 Globaldate = Data["date"].iloc[0]
                 steps = Data["total"].iloc[0]
-                Encryption = Data['encryption'].iloc[0]
+                Encryption = Data['encryptionurl'].iloc[0]
                 
                 return redirect(url_for('success', Encryption=Encryption))
             else:  # Failed #
@@ -139,7 +149,7 @@ def BadInput():
         return render_template('IncorrectInput.html')
 
 def generate_random_string(length=16):
-    characters = string.ascii_letters + string.digits  # A-Z, a-z, 0-9
+    characters = string.ascii_letters + string.digits
     return ''.join(random.choices(characters, k=length))
 
 if __name__ == '__main__':
