@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='NewData.css') }}">
 </head>
 <body>
     <div class="Welcome">
@@ -18,8 +19,10 @@
         </div>
         
         <form action="{{ url_for('NewData') }}" method="post">
-            <input type = "text" name = "sp"/>
-            <input type="submit" value="Continue" class="SubmitButton"/>
+            <input type = "text" name = "sp" class="Entry"/>
+            <div class="PadTop">
+                <input type="submit" value="Continue" class="SubmitButton Button"/>
+            </div>
         </form>
     </div>
 </body>
