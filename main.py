@@ -4,6 +4,7 @@ from datetime import date
 import random
 import string
 import hashlib
+from waitress import serve
 
 app = Flask(__name__)
 
@@ -36,7 +37,6 @@ def NewData():
                 df = data.loc[data['username'] == user]
                 df = df.loc[df['password'] == password]
             user_row = df
-            print(df)
 
             row_index = user_row.index[0]
             CurrentSteps = df.at[row_index, 'total']
@@ -113,10 +113,8 @@ def login():
         if button_clicked == "Submit":
             user = request.form['nm']
             password = request.form['pw']
-            print(password)
             password = str(password)
             password = encrypt(password)
-            print(password)
             Data = pd.read_csv("data.csv", dtype={'username': str, 'password': str})
             Data = Data.loc[Data['username'] == user]
             Data = Data.loc[Data['password'] == password]
@@ -153,4 +151,4 @@ def generate_random_string(length=16):
     return ''.join(random.choices(characters, k=length))
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000)
+    serve(app, host="0.0.0.0", port=8000)
