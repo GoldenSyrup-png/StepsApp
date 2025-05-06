@@ -30,7 +30,7 @@ def NewData():
             return redirect(url_for('BadInput'))
         else:
             Steps = int(Steps)
-            if Steps <= 0:
+            if Steps <= 0 or len(str(Steps)) > 15:
                 return redirect(url_for('BadInput'))
             else:
                 data = pd.read_csv('data.csv')
