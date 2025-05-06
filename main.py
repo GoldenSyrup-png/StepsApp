@@ -30,30 +30,33 @@ def NewData():
             return redirect(url_for('BadInput'))
         else:
             Steps = int(Steps)
-            data = pd.read_csv('data.csv')
-            df = data.loc[data['username'] == user]
-            df = df.loc[df['password'] == password]
-            if df.empty:
+            if Steps <= 0:
+                return redirect(url_for('BadInput'))
+            else:
+                data = pd.read_csv('data.csv')
                 df = data.loc[data['username'] == user]
                 df = df.loc[df['password'] == password]
-            user_row = df
+                if df.empty:
+                    df = data.loc[data['username'] == user]
+                    df = df.loc[df['password'] == password]
+                user_row = df
 
-            row_index = user_row.index[0]
-            CurrentSteps = df.at[row_index, 'total']
-            NewSteps = int(CurrentSteps) + Steps
+                row_index = user_row.index[0]
+                CurrentSteps = df.at[row_index, 'total']
+                NewSteps = int(CurrentSteps) + Steps
 
-            data.at[row_index, 'total'] = NewSteps
-            today = date.today()
-            formatted = today.strftime('%d-%m-%Y')
-            data.at[row_index, 'date'] = formatted
+                data.at[row_index, 'total'] = NewSteps
+                today = date.today()
+                formatted = today.strftime('%d-%m-%Y')
+                data.at[row_index, 'date'] = formatted
 
-            data.to_csv('data.csv', index=False)
+                data.to_csv('data.csv', index=False)
 
-            steps = NewSteps
-            Globaldate = formatted
-            Percentage = "{:.2f}".format((data["total"].iloc[0] / 1091450) * 100)
+                steps = NewSteps
+                Globaldate = formatted
+                Percentage = "{:.2f}".format((data["total"].iloc[0] / 1091450) * 100)
 
-            return redirect(url_for('success', Encryption=Encryption))
+                return redirect(url_for('success', Encryption=Encryption))
     else:
         user_ip = request.remote_addr
         return render_template('NewData.html', user_ip=user_ip, username = user)
