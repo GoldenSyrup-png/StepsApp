@@ -20,7 +20,7 @@
     </div>
     
     <div class="TryAgain">
-        <form action = "http://localhost:8000/fail" method = "post">
+        <form action = "{{ url_for('fail') }}" method = "post">
             <input type = "submit" value = "Continue" class="SubmitButton"/>
         </form>
     </div>

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='IncorrectInput.css') }}">
 </head>
 <body>
-    <form action = "http://localhost:8000/BadInput" method = "post">
+    <form action = "{{ url_for('BadInput') }}" method = "post">
         <div class="PadTop">
             <p>There was an incorrect input!</p>
         </div>

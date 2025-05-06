@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='NewLoginStyles.css') }}">
 </head>
 <body>
-    <form action = "http://localhost:8000/NewLogin" method = "post">
+    <form action = "{{ url_for('NewLogin') }}" method = "post">
         <div class="left">
             <p class="Label">Username:</p>
             <input type = "text" name = "usrnm"/>
