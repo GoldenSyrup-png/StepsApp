@@ -5,6 +5,18 @@ import random
 import string
 import hashlib
 from waitress import serve
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+
+# Define the scope and authenticate
+scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+creds = ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
+client = gspread.authorize(creds)
+
+# Open the spreadsheet by URL
+SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1FT0TZ1WssMkMvXWxcF2EUWNyKzJjGwLNQeyaVAT3AhA/edit?usp=sharing"
+sheet = client.open_by_url(SPREADSHEET_URL)
+worksheet = sheet.sheet1
 
 app = Flask(__name__)
 
@@ -33,7 +45,8 @@ def NewData():
             if Steps <= 0 or len(str(Steps)) > 15:
                 return redirect(url_for('BadInput'))
             else:
-                data = pd.read_csv('data.csv')
+                records = worksheet.get_all_records()
+                data = pd.DataFrame(records)
                 df = data.loc[data['username'] == user]
                 df = df.loc[df['password'] == password]
                 if df.empty:
@@ -50,7 +63,8 @@ def NewData():
                 formatted = today.strftime('%d-%m-%Y')
                 data.at[row_index, 'date'] = formatted
 
-                data.to_csv('data.csv', index=False)
+                worksheet.clear()
+                worksheet.update([data.columns.values.tolist()] + data.values.tolist())
 
                 steps = NewSteps
                 Globaldate = formatted
@@ -77,12 +91,15 @@ def NewLogin():
     if request.method == 'POST':
         username = request.form['usrnm'].strip()
         password = request.form['psswrd'].strip()
-        password = encrypt(password)
-        
-        Data = pd.read_csv('data.csv')
+
+        records = worksheet.get_all_records()
+        Data = pd.DataFrame(records)
         if not (Data.loc[Data['username'] == username]).empty:
             return redirect(url_for('fail'))
+        elif username.strip() == "" or password.strip() == "":
+            return redirect(url_for('fail'))
         else:
+            password = encrypt(password)
             today = date.today()
             formatted = today.strftime('%d-%m-%Y')
             dictionary = {
@@ -94,7 +111,10 @@ def NewLogin():
             }
             NewData = pd.DataFrame(dictionary)
             NewData = pd.concat([NewData, Data], ignore_index=True)
-            NewData.to_csv('data.csv', index=False)
+            
+            worksheet.clear()
+            worksheet.update([NewData.columns.values.tolist()] + NewData.values.tolist())
+            
             return redirect(url_for('login'))
     else:
         return render_template('NewLogin.html')
@@ -118,7 +138,10 @@ def login():
             password = request.form['pw']
             password = str(password)
             password = encrypt(password)
-            Data = pd.read_csv("data.csv", dtype={'username': str, 'password': str})
+            
+            records = worksheet.get_all_records()
+            Data = pd.DataFrame(records)
+
             Data = Data.loc[Data['username'] == user]
             Data = Data.loc[Data['password'] == password]
             if not Data.empty:  # Success #
@@ -149,7 +172,7 @@ def BadInput():
     else:
         return render_template('IncorrectInput.html')
 
-def generate_random_string(length=16):
+def generate_random_string(length=36):
     characters = string.ascii_letters + string.digits
     return ''.join(random.choices(characters, k=length))
 
